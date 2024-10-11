@@ -8,6 +8,8 @@ To launch the frontend locally and view edits live, run ```npm run dev``` from t
 
 To deploy the entire app locally, see https://firebase.google.com/docs/hosting/test-preview-deploy
 
+Kanban Board: https://github.com/users/Chuporceeta/projects/1
+
 ## Resources
 
 ### Frontend
