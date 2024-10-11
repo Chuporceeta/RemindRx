@@ -19,7 +19,7 @@ function WelcomePage() {
             Insert authentication logic  
         -----------------------------------
         */
-        let a = 0;
+        int a;
     };
     return (
         <div className="flex flex-col items-center justify-center min-h-screen space-y-6 p-4">
