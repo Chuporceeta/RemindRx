@@ -51,7 +51,7 @@ function WelcomePage() {
                     </div>
                     <div className="button_group">
                         <button type="submit">Login</button>
-                        <Link to="/create-acct">
+                        <Link to="/create-account">
                             <button type="button">Create Account</button>
                         </Link>
                     </div>
