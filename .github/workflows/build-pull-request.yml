@@ -1,0 +1,11 @@
+name: Build on PR
+on: pull_request
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm ci && npm run build
