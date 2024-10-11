@@ -49,7 +49,7 @@ function WelcomePage() {
                     </div>
                     <div className="flex space-x-4">
                         <button className="bg-blue-900 text-white py-2 px-4 rounded-lg hover:bg-blue-600" type="submit">Login</button>
-                        <Link to="/create-acct">
+                        <Link to="/create-account">
                             <button className="bg-blue-900 text-white py-2 px-4 rounded-lg hover:bg-blue-600" type="button">Create Account</button>
                         </Link>
                     </div>
