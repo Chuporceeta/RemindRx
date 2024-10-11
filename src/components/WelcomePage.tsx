@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import {Link} from 'react-router-dom';
+import {useState} from 'react';
 
 function WelcomePage() {
     const [username, setUsername] = useState('');
@@ -20,39 +20,37 @@ function WelcomePage() {
         -----------------------------------
         */
     };
-
     return (
-        <div className="welcome_page">
-            <h1>RemindRX</h1>
-
-            {/* Login Form */}
-            <div className="login_form">
-                <h2>Login</h2>
+        <div className="flex flex-col items-center justify-center min-h-screen space-y-6 p-4">
+            <h1 className="text-5xl font-bold">RemindRX</h1>
+            <div className="bg-white border border-gray-200 shadow-md p-6 rounded-lg space-y-2 text-center">
                 <form onSubmit={handleLogin}>
-                    <div className="form_group">
-                        <label htmlFor="username">Username</label>
+                    <div className="mb-4 flex flex-col">
                         <input
+                            className="border border-gray-300 p-2 rounded-lg w-full"
                             type="text"
                             id="username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
+                            placeholder="Username"
                             required
                         />
                     </div>
-                    <div className="form_group">
-                        <label htmlFor="password">Password</label>
+                    <div className="mb-4 flex flex-col">
                         <input
+                            className="border border-gray-300 p-2 rounded-lg w-full"
                             type="password"
                             id="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Password"
                             required
                         />
                     </div>
-                    <div className="button_group">
-                        <button type="submit">Login</button>
-                        <Link to="/create-account">
-                            <button type="button">Create Account</button>
+                    <div className="flex space-x-4">
+                        <button className="bg-blue-900 text-white py-2 px-4 rounded-lg hover:bg-blue-600" type="submit">Login</button>
+                        <Link to="/create-acct">
+                            <button className="bg-blue-900 text-white py-2 px-4 rounded-lg hover:bg-blue-600" type="button">Create Account</button>
                         </Link>
                     </div>
                 </form>
