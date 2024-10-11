@@ -8,4 +8,4 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: npm ci && npm run build
+      - run: npm install && npm run build
