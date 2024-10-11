@@ -9,4 +9,5 @@ jobs:
     runs-on: ubuntu-latest
     environment: build
     steps:
+      - uses: actions/checkout@v4
       - run: npm ci && npm run build
