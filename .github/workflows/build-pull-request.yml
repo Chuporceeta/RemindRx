@@ -7,5 +7,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: build
     steps:
       - run: npm ci && npm run build
