@@ -1,50 +1,33 @@
-# React + TypeScript + Vite
+# RemindRx
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The main branch is automatically deployed on updates, and is hosted at https://remindrx-1c8dd.web.app/
 
-Currently, two official plugins are available:
+When fetching from origin (or cloning for the first time), run ```npm install``` from the main directory to install any new dependencies
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+To launch the frontend locally and view edits live, run ```npm run dev``` from the main directory
 
-## Expanding the ESLint configuration
+To deploy the entire app locally, see https://firebase.google.com/docs/hosting/test-preview-deploy
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Resources
 
-- Configure the top-level `parserOptions` property like this:
+### Frontend
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+React Components: https://react.fluentui.dev/?path=/
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Styling: https://tailwindcss.com/
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+Vite: https://v3.vitejs.dev/guide/
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+[Wireframes.pdf](https://github.com/user-attachments/files/17336499/Wireframes.pdf)
+
+---------------
+
+### Backend
+
+Database: https://firebase.google.com/docs/firestore
+
+Backend Framework: https://firebase.google.com/docs/functions
+
+Hosting: https://firebase.google.com/docs/hosting
+
+Authentication: https://firebase.google.com/docs/auth
