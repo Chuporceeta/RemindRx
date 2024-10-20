@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import {createUser} from '../userAuth.ts'
 
 const CreateAccount = () => {
+    const [error, setError] = useState<string | null>(null);
+
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -24,6 +29,19 @@ const CreateAccount = () => {
 
         console.log(formData); 
     };
+
+    const handleSignUp = async () => {
+        try {
+            const user = await createUser(formData.email, formData.password);
+            console.log('User signed up:', user);
+          } catch (err) {
+            if (err instanceof Error) {
+              setError(err.message);
+            } else {
+              setError('An unknown error occurred');
+            }
+          }
+        };
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen space-y-6 p-4">

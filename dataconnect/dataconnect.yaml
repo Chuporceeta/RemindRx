@@ -1,0 +1,12 @@
+specVersion: "v1beta"
+serviceId: "RemindRx"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "RemindRx-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]
