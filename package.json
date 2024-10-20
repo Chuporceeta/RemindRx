@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fluentui/react": "^8.121.6",
     "firebase": "^10.14.1",
     "firebase-admin": "^12.6.0",
     "react": "^18.3.1",
