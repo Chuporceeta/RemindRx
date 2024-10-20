@@ -1,10 +1,39 @@
 import {Link, useNavigate} from 'react-router-dom';
 import {useState} from 'react';
-
+import {
+    Text, 
+    Stack, 
+    PrimaryButton, 
+    TextField,
+    IStackStyles, 
+    IStackTokens
+} from '@fluentui/react'
 function WelcomePage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const stackStyle: IStackStyles = {
+        root: {
+            width: '150%',
+            maxWidth: '400px',
+            margin: '0 auto', 
+            padding: '20px'
+        }
+    };
+    const stackToken: IStackTokens = {
+        childrenGap: 25, 
+        padding: 20
+    };
+    const buttonStyle = {
+        root: {
+            margin: '0 8px',
+            border: 'none'
+        },
+        rootHovered:{
+             backgroundColor: '#005a9e',
+             border: 'none'
+        }
+    };
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         /*
@@ -38,41 +67,74 @@ function WelcomePage() {
        navigate('/home');
     };
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen space-y-6 p-4">
-            <h1 className="text-5xl font-bold">RemindRX</h1>
-            <div className="bg-white border border-gray-200 shadow-md p-6 rounded-lg space-y-2 text-center">
-                <form onSubmit={handleLogin}>
-                    <div className="mb-4 flex flex-col">
-                        <input
-                            className="border border-gray-300 p-2 rounded-lg w-full"
-                            type="text"
-                            id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Username"
-                            required
-                        />
-                    </div>
-                    <div className="mb-4 flex flex-col">
-                        <input
-                            className="border border-gray-300 p-2 rounded-lg w-full"
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Password"
-                            required
-                        />
-                    </div>
-                    <div className="flex space-x-4">
-                        <button className="bg-blue-900 text-white py-2 px-4 rounded-lg hover:bg-blue-600" type="submit">Login</button>
-                        <Link to="/create-account">
-                            <button className="bg-blue-900 text-white py-2 px-4 rounded-lg hover:bg-blue-600" type="button">Create Account</button>
-                        </Link>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <Stack 
+            horizontalAlign="center"
+            verticalAlign="center"
+            styles={{
+                root: {
+                    minHeight: '100vh',
+                    backgroundColor: '#f0f0f0'
+                }
+            }}
+        >
+            <Stack
+                horizontalAlign="center"
+                tokens={stackToken}
+                styles={stackStyle}
+            >
+                <Text variant="xxLarge" block styles={{root: {fontSize: '60px', fontWeight: '900'}}}>
+                    RemindRX
+                </Text>
+                <Stack
+                    styles={{
+                        root:{
+                            backgroundColor: 'white',
+                            padding: '24px',
+                            borderRadius: '8px',
+                            boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
+                            border: '1px solid #e5e7eb',
+                            width: '100%',              
+                        }
+                    }}
+                    tokens={{ childrenGap: 16 }}
+                >
+                    <form onSubmit={handleLogin}>
+                        <Stack tokens={{ childrenGap: 15 }}>
+                            <TextField
+                                placeholder="Username"
+                                value={username}
+                                onChange={(_, newValue) => setUsername(newValue || '')}
+                                required
+                            />
+
+                            <TextField
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(_, newValue) => setPassword(newValue || '')}
+                                canRevealPassword
+                                required
+                            />
+
+                            <Stack horizontal horizontalAlign="center" tokens={{ childrenGap: 6 }}>
+                                <PrimaryButton
+                                    text="Login"
+                                    type="submit"
+                                    styles={buttonStyle}
+                                />
+                                <Link to="/create-account" style={{ textDecoration: 'none' }}>
+                                <PrimaryButton
+                                    text="Create Account"
+                                    styles={buttonStyle}
+                                />
+                                </Link>
+                            </Stack>
+                        </Stack>
+                    </form>
+                </Stack>
+            </Stack>
+        </Stack>
+
     );
 }
 
