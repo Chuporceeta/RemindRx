@@ -33,3 +33,20 @@ Backend Framework: https://firebase.google.com/docs/functions
 Hosting: https://firebase.google.com/docs/hosting
 
 Authentication: https://firebase.google.com/docs/auth
+
+#### Basic Database Structure:
+- Users (Collection)
+    - uid (Document)
+      - firstName
+      - lastName
+      - FCMTokens (Array): [token1, token2, ...]
+      - Medications (Subcollection)
+        - medid (Document)
+          - name
+          - dosage
+          - reminderType
+          - reminderTime
+        - medid...
+        - ...
+   - uid...
+   - ...
