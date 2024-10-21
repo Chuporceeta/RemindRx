@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import {createUser} from '../userAuth.ts'
 
 const CreateAccount = () => {
     const [formData, setFormData] = useState({
