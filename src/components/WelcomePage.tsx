@@ -1,17 +1,16 @@
 import {Link, useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import {Text, Stack, PrimaryButton, TextField, IStackStyles, IStackTokens} from '@fluentui/react'
+
 function WelcomePage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    const stackS: IStackStyles = {
-        root: {width: '150%', maxWidth: '400px', margin: '0 auto', padding: '20px'}
-    };
+    const stackS: IStackStyles = {root: {width: '150%', maxWidth: '400px', margin: '0 auto', padding: '20px'}};
     const stackTkn: IStackTokens = {childrenGap: 25, padding: 20};
     const buttonStyle = {
         root: {margin: '0 8px', border: 'none'},
-        rootHovered:{backgroundColor: '#005a9e', border: 'none'}
+        rootHovered:{backgroundColor: '#caf0f8', border: 'none'}
     };
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -51,7 +50,7 @@ function WelcomePage() {
                                 placeholder="Password"
                                 value={password}
                                 onChange={(_, newValue) => setPassword(newValue || '')}
-                                canRevealPassword
+                                canRevealPassword={true}
                                 required
                             />
                             <Stack horizontal horizontalAlign="center" tokens={{ childrenGap: 6 }}>
