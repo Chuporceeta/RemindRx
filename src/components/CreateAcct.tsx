@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
-import {createUser} from '../userAuth.ts'
+import {createUser} from '../scripts/userAuth.ts'
 
 const CreateAccount = () => {
     const [error, setError] = useState<string | null>(null);
@@ -32,14 +32,14 @@ const CreateAccount = () => {
               setError('An unknown error occurred');
             }
           }
-        };
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         // Future functionality for form submission goes here
 
-        console.log(formData); 
+        console.log(formData);
     };
 
     return (
