@@ -3,6 +3,8 @@ import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
 import {createUser} from '../userAuth.ts'
 
 const CreateAccount = () => {
+    const [error, setError] = useState<string | null>(null);
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -18,6 +20,19 @@ const CreateAccount = () => {
             [e.target.name]: e.target.value,
         });
     };
+
+    const handleSignUp = async () => {
+        try {
+            const user = await createUser(formData.email, formData.password);
+            console.log('User signed up:', user);
+          } catch (err) {
+            if (err instanceof Error) {
+              setError(err.message);
+            } else {
+              setError('An unknown error occurred');
+            }
+          }
+        };
 
     const handleSubmit = (e) => {
         e.preventDefault();
