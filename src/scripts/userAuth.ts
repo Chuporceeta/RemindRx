@@ -1,9 +1,8 @@
-import { initializeApp } from "firebase/app";
-import { firebaseConfig } from '../../firebase-config.ts';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {app, auth} from '../firebase/firebase.ts';
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// const app = initializeApp(firebaseConfig);
+// const auth = getAuth(app);
 const createUser = async (email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -24,4 +23,4 @@ const logInUser = async (email, password) => {
     throw error;
   }
 };
-export { createUser, logInUser };
+export {createUser, logInUser };
