@@ -56,7 +56,7 @@ function HomePage() {
             Recently Taken
           </Text>
           <Stack>
-            {upcoming.map((med, index) => (renderMedCard(med, true)))}
+            {taken.map((med, index) => (renderMedCard(med, true)))}
           </Stack>
         </Stack>
         <Separator />
