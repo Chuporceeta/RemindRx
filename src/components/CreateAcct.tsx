@@ -95,7 +95,7 @@ const CreateAccount = () => {
                             required
                         />
                     </div>
-                    <button className="bg-blue-900 text-white py-2 px-4 rounded-lg w-full hover:bg-blue-600" type="submit">Create Account</button>
+                        <button className="bg-blue-900 text-white py-2 px-4 rounded-lg w-full hover:bg-blue-600" type="submit">Create Account</button>
                     </form>
             </div>
         </div>
