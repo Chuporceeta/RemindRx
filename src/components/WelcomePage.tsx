@@ -1,8 +1,9 @@
 import {Link, useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import {Text, Stack, PrimaryButton, TextField, IStackStyles, IStackTokens} from '@fluentui/react'
-
+import {initializeIcons} from '@fluentui/font-icons-mdl2'
 function WelcomePage() {
+    initializeIcons();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -25,18 +26,15 @@ function WelcomePage() {
             <Stack horizontalAlign="center" tokens={stackTkn} styles={stackS}>
                 <Text variant="xxLarge" block styles={{root: {fontSize: '60px', fontWeight: '900'}}}>RemindRX</Text>
                 <Stack
-                    styles={{
-                        root:{
+                    styles={{root:{
                             backgroundColor: 'white',
                             padding: '24px',
                             borderRadius: '8px',
                             boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
                             border: '1px solid #e5e7eb',
                             width: '100%',              
-                        }
-                    }}
-                    tokens={{ childrenGap: 16 }}
-                >
+                    }}}
+                    tokens={{ childrenGap: 16 }}>
                     <form onSubmit={handleLogin}>
                         <Stack tokens={{ childrenGap: 15 }}>
                             <TextField
