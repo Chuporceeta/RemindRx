@@ -2,6 +2,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import {Text, Stack, PrimaryButton, TextField, IStackStyles, IStackTokens} from '@fluentui/react'
 import {initializeIcons} from '@fluentui/font-icons-mdl2'
+
 function WelcomePage() {
     initializeIcons();
     const [username, setUsername] = useState('');
