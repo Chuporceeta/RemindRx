@@ -69,9 +69,9 @@ function HomePage() {
           </Stack>
         </Stack>
         <Stack horizontalAlign="center" tokens={{ childrenGap: 16 }}>
-          <Link to="/add-medication" style={{textDecoration: 'none'}}>
+          <Link to="/create-med" style={{textDecoration: 'none'}}>
             <PrimaryButton
-              text="Add New Medication"
+              text="Add New"
               styles={{root: {marginTop: '20px'}}}
             />
           </Link>
