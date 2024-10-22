@@ -46,7 +46,7 @@ const CreateAccount = () => {
         <div className="flex flex-col items-center justify-center min-h-screen space-y-6 p-4">
             <h2 className="text-5xl font-bold">Create Account</h2>
             <div className="bg-white border border-gray-200 shadow-md p-6 rounded-lg space-y-4 w-full max-w-md">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSignUp}>
                     <div className="mb-4 flex flex-col">
                         <input
                             className="border border-gray-300 p-2 rounded-lg w-full"
