@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import {createUser} from "../scripts/userAuth.tsx";
+import {useNavigate} from "react-router-dom";
 
 const CreateAccount = () => {
+
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -17,12 +22,20 @@ const CreateAccount = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Future functionality for form submission goes here
-
-        console.log(formData); 
+        console.log(formData);
+        try {
+            const user = await createUser(formData);
+            console.log('User signed up:', user);
+            navigate('/home');
+        } catch (err) {
+            if (err instanceof Error) {
+                console.log(err.message);
+            } else {
+                console.log('An unknown error occurred');
+            }
+        }
     };
 
     return (
