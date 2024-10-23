@@ -78,6 +78,7 @@ const CreateMed: React.FC = () => {
                     />
                     <ComboBox
                         label="Frequency"
+                        required
                         options={freqOptions}
                         selectedKey={freq}
                         onChange={(_, option) => setFreq(option?.key || '')}
