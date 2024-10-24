@@ -19,8 +19,7 @@ export const addMed = async (medName: string, dosage: string, startDate: Date, f
         const newDoc = makeDoc(medName, dosage, startDate, freq);
         const user = auth.currentUser;
         if (user) {
-            console.log("Adding medication to user's data...");
-            await setDoc(doc(db, "UsersMedData", user.uid, "Medications", medName), newDoc);
+            await setDoc(doc(db, "Users", user.uid, "Medications", medName), newDoc);
         }
     } catch (err: any) {
         throw new Error(err);
