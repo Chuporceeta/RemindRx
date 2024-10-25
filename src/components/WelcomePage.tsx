@@ -3,6 +3,7 @@ import {useState} from 'react';
 import {Text, Stack, PrimaryButton, TextField, IStackStyles, IStackTokens} from '@fluentui/react'
 import { initializeIcons } from '@fluentui/font-icons-mdl2'
 import { logInUser } from "../scripts/userAuth.tsx";
+import {getFCMToken} from "../scripts/FCM.tsx";
 
 initializeIcons();
 
@@ -21,6 +22,7 @@ function WelcomePage() {
         try {
             const user = await logInUser(email, password);
             console.log('User logged in:', user);
+            getFCMToken();
             navigate('/home');
         } catch (err) {
             if (err instanceof Error) {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {createUser} from "../scripts/userAuth.tsx";
 import {useNavigate} from "react-router-dom";
+import {getFCMToken} from "../scripts/FCM.tsx";
 
 const CreateAccount = () => {
 
@@ -28,6 +29,7 @@ const CreateAccount = () => {
         try {
             const user = await createUser(formData);
             console.log('User signed up:', user);
+            getFCMToken();
             navigate('/home');
         } catch (err) {
             if (err instanceof Error) {
