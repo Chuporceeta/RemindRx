@@ -1,11 +1,14 @@
 import {Link, useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import {Text, Stack, PrimaryButton, TextField, IStackStyles, IStackTokens} from '@fluentui/react'
-import {initializeIcons} from '@fluentui/font-icons-mdl2'
+import { initializeIcons } from '@fluentui/font-icons-mdl2'
+import { logInUser } from "../scripts/userAuth.tsx";
+import {getFCMToken} from "../scripts/FCM.tsx";
+
+initializeIcons();
 
 function WelcomePage() {
-    initializeIcons();
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const stackS: IStackStyles = {root: {width: '150%', maxWidth: '400px', margin: '0 auto', padding: '20px'}};
@@ -16,7 +19,18 @@ function WelcomePage() {
     };
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        navigate('/home');
+        try {
+            const user = await logInUser(email, password);
+            console.log('User logged in:', user);
+            getFCMToken();
+            navigate('/home');
+        } catch (err) {
+            if (err instanceof Error) {
+                console.log(err.message);
+            } else {
+                console.log('An unknown error occurred');
+            }
+        }
     };
     return (
         <Stack 
@@ -39,9 +53,9 @@ function WelcomePage() {
                     <form onSubmit={handleLogin}>
                         <Stack tokens={{ childrenGap: 15 }}>
                             <TextField
-                                placeholder="Username"
-                                value={username}
-                                onChange={(_, newValue) => setUsername(newValue || '')}
+                                placeholder="Email"
+                                value={email}
+                                onChange={(_, newValue) => setEmail(newValue || '')}
                                 required
                             />
                             <TextField

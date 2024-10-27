@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import {useNavigate} from 'react-router-dom';
+import {addMed} from '../scripts/medCalls';
 import {
     Stack, 
     TextField, 
@@ -33,9 +34,11 @@ const CreateMed: React.FC = () => {
     const [time, setTime] = useState('');
     const [day, setDay] = useState<string | number>('');
     const [error, setE] = useState('');
-    const submit = (e: React.FormEvent) => {
+    
+    const submit = async (e: React.FormEvent) => {
         e.preventDefault();
         // Send medication data to the backend
+
         console.log({name, dosage, time, day, freq});
         navigate('/home');
     }
