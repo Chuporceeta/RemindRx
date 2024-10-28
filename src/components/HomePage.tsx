@@ -1,38 +1,94 @@
 import {Link, useNavigate} from 'react-router-dom';
 import {useState} from 'react';
-import {Text, Stack, PrimaryButton, DefaultButton, IStackTokens, mergeStyles, Separator} from '@fluentui/react';
-import {Timer, Clock} from 'lucide-react';
-import {getMedsDB} from '../scripts/medCalls.tsx';
-import firebase from 'firebase/compat/app'
+import {Text, Stack, IconButton, PrimaryButton, DefaultButton, IStackTokens, mergeStyles, Separator} from '@fluentui/react';
+import {Timer, Clock, CheckCircle, Edit, Trash2} from 'lucide-react';
 
+interface Medication {
+  id: string; 
+  name: string; 
+  dosage: string; 
+  time: string;
+  day: string; 
+  freq: string;
+  isTaken?: boolean;
+}
+const daysOfWeek = {
+  'sun': 'Sunday',
+  'mon': 'Monday',
+  'tue': 'Tuesday',
+  'wed': 'Wednesday',
+  'thu': 'Thursday',
+  'fri': 'Friday',
+  'sat': 'Saturday'
+};
 function HomePage() {
-  const [upcoming, setUpcoming] = useState(getMedsDB() ?? []); // Initialize state with an empty array
-  // const fetchDocuments = async () => {
-  //   try {
-  //   const docs = await getMeds(); // Await your async function
-  //   setUpcoming(docs ?? []); // Set the fetched documents in state
-  //   } catch (error) {
-  //   console.error("Error fetching documents:", error);
-  //   }};
-  const taken = [
-    { name: "Medicine A", dosage: "10mg", time: "90 min ago" },
-    { name: "Medicine B", dosage: "5mg", time: "2 hrs ago" }
-  ];
+  const [medications, setMedications] = useState<{
+    taken: Medication[];
+    upcoming: Medication[];
+  }>({
+    taken: [
+      {id: '001', name: 'Aspirin', dosage: '500mg', time: '8:00 AM', day: 'mon', freq:"Weekly", isTaken: false},
+      {id: '002', name: 'Ibuprofen', dosage: '200mg', time: '12:00 PM', day: 'mon', freq:"Daily", isTaken: false},
+      {id: '003', name: 'Tylenol', dosage: '500mg', time: '6:00 PM', day: 'mon', freq:"Daily", isTaken: false},
+    ],
+    upcoming: [
+      {id: '004', name: 'Aspirin', dosage: '500mg', time: '8:00 AM', day: 'tue', freq:"Weekly", isTaken: true},
+      {id: '005', name: 'Ibuprofen', dosage: '200mg', time: '12:00 PM', day: 'tue', freq:"Daily", isTaken: true},
+      {id: '006', name: 'Tylenol', dosage: '500mg', time: '6:00 PM', day: 'tue', freq:"weekly", isTaken: true},
+    ]
+  });
   const stackTkn: IStackTokens = {childrenGap: 16, padding: 16};
-  const medCardClass = mergeStyles({backgroundColor: '#caf0f8', padding: '16px', borderRadius: '8px', marginBottom: '8px'});
-  const renderMedCard = (item, isRecent = true) => {
-    return (
-      <Stack className={medCardClass} horizontal horizontalAlign="space-between" verticalAlign="center">
-        <Stack horizontal tokens={{childrenGap: 10}} verticalAlign="center">
-          {isRecent ? (<Clock size={24} className="text-gray-600"/>) : (<Timer size={24} className="text-gray-600"/>)}
+  const medCardClass = mergeStyles({backgroundColor: '#caf0f8', padding: '16px', borderRadius: '8px', marginBottom: '8px', 
+    transition: 'all 0.3s ease-in-out', '&:hover': {backgroundColor: '#ade8f4'}
+  });
+  const markAsTaken = (medID: string) => {
+    const now = new Date();
+    setMedications(prev => {
+      const medicationToMove = prev.upcoming.find(med => med.id === medID);
+      if (!medicationToMove) 
+        return prev; 
+      const takenMed = {
+        ...medicationToMove,
+        isTaken: true,
+      }
+      return {
+        taken: [takenMed, ...prev.taken],
+        upcoming: prev.upcoming.filter(med => med.id !== medID)
+      };
+    });
+  };
+  const deleteMed = (medID: string) => {
+    setMedications(prev => {
+      return {
+        taken: prev.taken.filter(med => med.id !== medID),
+        upcoming: prev.upcoming.filter(med => med.id !== medID)
+      };
+    });
+  }
+  const renderMedCard = (med: Medication, recent: boolean) => {
+    return(
+      <Stack key={med.id} className={medCardClass} horizontal horizontalAlign='start' verticalAlign='center'>
+        {recent ? (
+          <Clock size={24} className="text-gray-600"/>
+        ) : (
+          <Timer size={24} className="text-gray-600"/>
+        )}
+        <Stack tokens={{childrenGap: 4}} styles={{root: {flex: 2, paddingLeft: '26px'}}}>
+          <Text variant="mediumPlus" styles={{root: {fontWeight: '600'}}}>{med.name} - {med.dosage}</Text>
           <Stack tokens={{childrenGap: 4}}>
-            <Text variant="mediumPlus" styles={{ root: { fontWeight: '600' } }}>
-              {item.name} - {item.dosage}
-            </Text>
-            <Text variant="small" styles={{ root: { color: '#666' } }}>
-              {isRecent ? item.timeAgo : item.time}
-            </Text>
+            <Text variant="small" styles={{root: {color: '#665'}}}>{daysOfWeek[med.day]} at {med.time}</Text>
           </Stack>
+          <Text variant="small" styles={{root: {color: '#665'}}}>{med.freq}</Text>
+        </Stack>
+        <Stack horizontal tokens={{childrenGap: 8}}>
+          <button className="p-2 rounded-full bg-[#f72585] hover:bg-[#7209b7] text-white" onClick={() => deleteMed(med.id)}>
+              <Trash2 size={14}/>
+            </button>
+          {!recent && (
+            <button className="p-2 rounded-full bg-[#0077b6] hover:bg-[#023e8a] text-white" onClick={() => markAsTaken(med.id)}>
+              <CheckCircle size={14}/>
+            </button>
+          )}
         </Stack>
       </Stack>
     );
@@ -51,7 +107,7 @@ function HomePage() {
         </Text>
         <Link to="/edit-medications" style={{textDecoration: 'none'}}>
           <DefaultButton
-            iconProps={{iconName: 'Edit'}}
+            iconProps={{iconName: 'Edit', children: <Edit size={16} className="mr-2"/>}}
             text="Edit Medications"
           />
         </Link>
@@ -62,19 +118,19 @@ function HomePage() {
             Recently Taken
           </Text>
           <Stack>
-            {taken.map((med, index) => (renderMedCard(med, true)))}
+            {medications.taken.map((med, index) => (renderMedCard(med, true)))}
           </Stack>
         </Stack>
         <Separator />
         <Stack tokens={stackTkn}>
-          <Text variant="large" styles={{root: { fontWeight: '600'}}}>
+          <Text variant="large" styles={{root: {fontWeight: '600'}}}>
             Upcoming Medications
           </Text>
           <Stack>
-            {/* {upcoming.map((med, index) => (renderMedCard(med, false)))} */}
+            {medications.upcoming.map((med, index) => (renderMedCard(med, false)))}
           </Stack>
         </Stack>
-        <Stack horizontalAlign="center" tokens={{ childrenGap: 16 }}>
+        <Stack horizontalAlign="center" tokens={{childrenGap: 16}}>
           <Link to="/create-med" style={{textDecoration: 'none'}}>
             <PrimaryButton
               text="Add New"
