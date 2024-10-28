@@ -58,7 +58,6 @@ function WelcomePage() {
                                 value={email}
                                 onChange={(_, newValue) => setEmail(newValue || '')}
                                 required
-                                errorMessage={error}
                             />
                             <TextField
                                 type="password"
