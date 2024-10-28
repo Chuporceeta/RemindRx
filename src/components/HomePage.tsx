@@ -2,15 +2,21 @@ import {Link, useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import {Text, Stack, PrimaryButton, DefaultButton, IStackTokens, mergeStyles, Separator} from '@fluentui/react';
 import {Timer, Clock} from 'lucide-react';
+import {getMedsDB} from '../scripts/medCalls.tsx';
+import firebase from 'firebase/compat/app'
 
 function HomePage() {
+  const [upcoming, setUpcoming] = useState(getMedsDB() ?? []); // Initialize state with an empty array
+  // const fetchDocuments = async () => {
+  //   try {
+  //   const docs = await getMeds(); // Await your async function
+  //   setUpcoming(docs ?? []); // Set the fetched documents in state
+  //   } catch (error) {
+  //   console.error("Error fetching documents:", error);
+  //   }};
   const taken = [
     { name: "Medicine A", dosage: "10mg", time: "90 min ago" },
     { name: "Medicine B", dosage: "5mg", time: "2 hrs ago" }
-  ];
-  const upcoming = [
-    { name: "Medicine C", dosage: "5mg", time: "in 3 hours" },
-    { name: "Medicine D", dosage: "10mg", time: "in 6 hours" },
   ];
   const stackTkn: IStackTokens = {childrenGap: 16, padding: 16};
   const medCardClass = mergeStyles({backgroundColor: '#caf0f8', padding: '16px', borderRadius: '8px', marginBottom: '8px'});
@@ -65,7 +71,7 @@ function HomePage() {
             Upcoming Medications
           </Text>
           <Stack>
-            {upcoming.map((med, index) => (renderMedCard(med, false)))}
+            {/* {upcoming.map((med, index) => (renderMedCard(med, false)))} */}
           </Stack>
         </Stack>
         <Stack horizontalAlign="center" tokens={{ childrenGap: 16 }}>
