@@ -1,7 +1,7 @@
 import {Link, useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import {Text, Stack, IconButton, PrimaryButton, DefaultButton, IStackTokens, mergeStyles, Separator} from '@fluentui/react';
-import {Timer, Clock, CheckCircle, Edit} from 'lucide-react';
+import {Timer, Clock, CheckCircle, Edit, Trash2} from 'lucide-react';
 
 interface Medication {
   id: string; 
@@ -57,6 +57,14 @@ function HomePage() {
       };
     });
   };
+  const deleteMed = (medID: string) => {
+    setMedications(prev => {
+      return {
+        taken: prev.taken.filter(med => med.id !== medID),
+        upcoming: prev.upcoming.filter(med => med.id !== medID)
+      };
+    });
+  }
   const renderMedCard = (med: Medication, recent: boolean) => {
     return(
       <Stack key={med.id} className={medCardClass} horizontal horizontalAlign='start' verticalAlign='center'>
@@ -72,11 +80,16 @@ function HomePage() {
           </Stack>
           <Text variant="small" styles={{root: {color: '#665'}}}>{med.freq}</Text>
         </Stack>
-        {!recent && (
-          <button className="p-2 rounded-full bg-[#0077b6] hover:bg-[#023e8a] text-white" onClick={() => markAsTaken(med.id)}>
-            <CheckCircle size={14}/>
-          </button>
-        )}
+        <Stack horizontal tokens={{childrenGap: 8}}>
+          <button className="p-2 rounded-full bg-[#f72585] hover:bg-[#7209b7] text-white" onClick={() => deleteMed(med.id)}>
+              <Trash2 size={14}/>
+            </button>
+          {!recent && (
+            <button className="p-2 rounded-full bg-[#0077b6] hover:bg-[#023e8a] text-white" onClick={() => markAsTaken(med.id)}>
+              <CheckCircle size={14}/>
+            </button>
+          )}
+        </Stack>
       </Stack>
     );
   };

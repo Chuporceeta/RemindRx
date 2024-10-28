@@ -10,6 +10,7 @@ initializeIcons();
 function WelcomePage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setE] = useState('');
     const navigate = useNavigate();
     const stackS: IStackStyles = {root: {width: '150%', maxWidth: '400px', margin: '0 auto', padding: '20px'}};
     const stackTkn: IStackTokens = {childrenGap: 25, padding: 20};
@@ -26,9 +27,9 @@ function WelcomePage() {
             navigate('/home');
         } catch (err) {
             if (err instanceof Error) {
-                console.log(err.message);
+                setE(err.message);
             } else {
-                console.log('An unknown error occurred');
+                setE('An unknown error occurred');
             }
         }
     };
@@ -65,6 +66,7 @@ function WelcomePage() {
                                 onChange={(_, newValue) => setPassword(newValue || '')}
                                 canRevealPassword={true}
                                 required
+                                errorMessage={error}
                             />
                             <Stack horizontal horizontalAlign="center" tokens={{ childrenGap: 6 }}>
                                 <PrimaryButton text="Login" type="submit" styles={buttonStyle}/>
