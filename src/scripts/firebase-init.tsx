@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "../../firebase-config.ts";
+import { firebaseConfig } from "../../public/firebase-config.ts";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getMessaging } from "firebase/messaging";
