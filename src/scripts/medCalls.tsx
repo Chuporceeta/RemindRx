@@ -1,25 +1,19 @@
-import {app, auth, db} from './firebase-init.tsx';
-import { collection, doc , setDoc, Timestamp} from "firebase/firestore";
+import {auth, db} from './firebase-init.tsx';
+import {collection, addDoc} from "firebase/firestore";
 
-// medName: string
-// dosage: string
-// startDate: Date converted intro string
-// freq: string | number
-function makeDoc(name: string, dosage: string, startDate: Date, freq: string | number) {
-    return {
-        name: name,
-        dosage: dosage,
-        startDate: Timestamp.fromDate(startDate),
-        freq: freq
-    };
+type medInfo = {
+    name: string,
+    dosage: string,
+    time: string,
+    day: string | number,
+    freq: string | number,
 }
 
-export const addMed = async (medName: string, dosage: string, startDate: Date, freq: string | number) => {
+export const addMed = async (medInfo: medInfo) => {
     try {
-        const newDoc = makeDoc(medName, dosage, startDate, freq);
         const user = auth.currentUser;
         if (user) {
-            await setDoc(doc(db, "Users", user.uid, "Medications", medName), newDoc);
+            await addDoc(collection(db, "Users", user.uid, "Medications"), medInfo);
         }
     } catch (err: any) {
         throw new Error(err);
