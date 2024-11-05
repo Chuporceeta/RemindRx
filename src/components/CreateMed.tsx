@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import {useNavigate} from 'react-router-dom';
+import {addMed} from '../scripts/medCalls';
 import {
     Stack, 
     TextField, 
@@ -7,40 +8,38 @@ import {
     DefaultButton, 
     IStackTokens, 
     Text, 
-    DatePicker,
-    IDatePickerStrings, 
-    ComboBox, 
+    ComboBox,
     IComboBoxOption
 } from '@fluentui/react'
-
 const stackTkn: IStackTokens = {childrenGap: 20};
-const datePS: IDatePickerStrings = {
-    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-    shortDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    goToToday: 'Today', 
-    prevMonthAriaLabel: 'Previous Month',
-    nextMonthAriaLabel: 'Next Month',
-    prevYearAriaLabel: 'Previous Year',
-    nextYearAriaLabel: 'Next Year'
-};
 const freqOptions: IComboBoxOption[] = [
     {key: 'daily', text: 'Daily'}, 
     {key: 'weekly', text: 'Weekly'},
     {key: 'monthly', text: 'Monthly'}
 ];
+const daysOfWeek: IComboBoxOption[] = [
+    {key: 0, text: 'Sunday'},
+    {key: 1, text: 'Monday'},
+    {key: 2, text: 'Tuesday'},
+    {key: 3, text: 'Wednesday'},
+    {key: 4, text: 'Thursday'},
+    {key: 5, text: 'Friday'},
+    {key: 6, text: 'Saturday'}
+];
 const CreateMed: React.FC = () => {
     const navigate = useNavigate();
     const [name, setName] = useState('');
     const [dosage, setDosage] = useState('');
-    const [startDate, setStartDate] = useState<Date | undefined>(new Date());
     const [freq, setFreq] = useState<string | number>('');
+    const [time, setTime] = useState('');
+    const [day, setDay] = useState<string | number>('');
     const [error, setE] = useState('');
-    const submit = (e: React.FormEvent) => {
+    
+    const submit = async (e: React.FormEvent) => {
         e.preventDefault();
         // Send medication data to the backend
-        console.log({name, dosage, startDate, freq});
+        await addMed({name, dosage, time, day, freq})
+        console.log({name, dosage, time, day, freq});
         navigate('/home');
     }
     return(
@@ -69,15 +68,23 @@ const CreateMed: React.FC = () => {
                         value={dosage}
                         onChange={(_, newValue) => setDosage(newValue || '')}
                     />
-                    <DatePicker
-                        label="Start Date"
-                        isRequired
-                        strings={datePS}
-                        value={startDate}
-                        onSelectDate={(date) => setStartDate}
+                    <TextField
+                        label = "Time"
+                        required
+                        type="time"
+                        value={time}
+                        onChange={(_, newValue) => setTime(newValue || '')}
+                    />
+                    <ComboBox
+                        label = "Day of Week"
+                        required
+                        options={daysOfWeek}
+                        selectedKey={day}
+                        onChange={(_, option) => setDay(option?.key || '')}
                     />
                     <ComboBox
                         label="Frequency"
+                        required
                         options={freqOptions}
                         selectedKey={freq}
                         onChange={(_, option) => setFreq(option?.key || '')}
