@@ -2,16 +2,10 @@ import {Link, useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import {Text, Stack, IconButton, PrimaryButton, DefaultButton, IStackTokens, mergeStyles, Separator} from '@fluentui/react';
 import {Timer, Clock, CheckCircle, Edit, Trash2} from 'lucide-react';
+import {Medication} from '../types/types';
+import {getMedsDB} from '../scripts/medCalls.tsx';
+import {useEffect} from 'react';
 
-interface Medication {
-  id: string; 
-  name: string; 
-  dosage: string; 
-  time: string;
-  day: string; 
-  freq: string;
-  isTaken?: boolean;
-}
 const daysOfWeek = {
   'sun': 'Sunday',
   'mon': 'Monday',
@@ -22,6 +16,7 @@ const daysOfWeek = {
   'sat': 'Saturday'
 };
 function HomePage() {
+  const meds = getMedsDB();
   const [medications, setMedications] = useState<{
     taken: Medication[];
     upcoming: Medication[];
@@ -31,12 +26,20 @@ function HomePage() {
       {id: '002', name: 'Ibuprofen', dosage: '200mg', time: '12:00 PM', day: 'mon', freq:"Daily", isTaken: false},
       {id: '003', name: 'Tylenol', dosage: '500mg', time: '6:00 PM', day: 'mon', freq:"Daily", isTaken: false},
     ],
-    upcoming: [
-      {id: '004', name: 'Aspirin', dosage: '500mg', time: '8:00 AM', day: 'tue', freq:"Weekly", isTaken: true},
-      {id: '005', name: 'Ibuprofen', dosage: '200mg', time: '12:00 PM', day: 'tue', freq:"Daily", isTaken: true},
-      {id: '006', name: 'Tylenol', dosage: '500mg', time: '6:00 PM', day: 'tue', freq:"weekly", isTaken: true},
-    ]
+    upcoming: []
   });
+
+  useEffect(() => {
+    const fetchMeds = async () => {
+      const medsData: Medication[] = await meds; // Update the type of medsData to Medication[]
+      setMedications(prev => ({
+        ...prev,
+        upcoming: medsData.filter((med: Medication) => !med.isTaken)
+      }));
+    };
+    fetchMeds();
+  }, [meds]);
+
   const stackTkn: IStackTokens = {childrenGap: 16, padding: 16};
   const medCardClass = mergeStyles({backgroundColor: '#caf0f8', padding: '16px', borderRadius: '8px', marginBottom: '8px', 
     transition: 'all 0.3s ease-in-out', '&:hover': {backgroundColor: '#ade8f4'}

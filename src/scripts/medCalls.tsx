@@ -1,18 +1,13 @@
 
 import {auth, db} from './firebase-init.tsx';
 import {getDocs, collection, addDoc} from "firebase/firestore";
+import { medInfo, Medication } from "../types/types";
 
-type medInfo = {
-    name: string,
-    dosage: string,
-    time: string,
-    day: string | number,
-    freq: string | number,
-}
 
 export const addMed = async (medInfo: medInfo) => {
     try {
         const user = auth.currentUser;
+
         if (user) {
             await addDoc(collection(db, "Users", user.uid, "Medications"), medInfo);
         }
@@ -26,9 +21,10 @@ export const getMedsDB = async () => {
         const user = auth.currentUser;
         if (user) {
             const snapshot = await getDocs(collection(db, "Users", user.uid, "Medications"));
-            const res = snapshot.docs.map(doc => doc.data());
-            console.log(res);
-            // const res2 = Array.from(res) as Array<{name: string, dosage: string, startDate: Date, freq: string | number}>;
+            const res: Medication[] = [];
+            snapshot.forEach((doc) => {
+                res.push(doc.data() as Medication);
+            });
             return res;
         }
         else{
