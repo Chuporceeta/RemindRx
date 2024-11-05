@@ -1,13 +1,6 @@
-import {app, auth, db} from './firebase-init.tsx';
-import { collection, 
-    doc,
-     setDoc, 
-     getDoc,
-     getDocs, 
-     Timestamp} from "firebase/firestore";
-// import firebase from 'firebase/compat/app';
+
 import {auth, db} from './firebase-init.tsx';
-import {collection, addDoc} from "firebase/firestore";
+import {getDocs, collection, addDoc} from "firebase/firestore";
 
 type medInfo = {
     name: string,
