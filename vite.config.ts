@@ -2,12 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import {VitePWA, VitePWAOptions} from "vite-plugin-pwa";
 
-const manifestForPlugin: Partial<VitePWAOptions> = {
+const manifest: Partial<VitePWAOptions> = {
   registerType: "prompt",
   includeAssets: [],
   manifest: {
     "name": "RemindRx",
-    "short_name": "RemindRx",
     "description": "A medication reminder and management app.",
     "icons": [
       {
@@ -28,6 +27,22 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), VitePWA(manifestForPlugin)],
+  plugins: [
+      react(),
+      VitePWA({
+          strategies: 'injectManifest',
+          injectRegister: null,
+          registerType: 'autoUpdate',
+          manifest: manifest,
+          devOptions: {
+            enabled: true,
+            type: 'module',
+            navigateFallback: 'index.html'
+          },
+          workbox: {
+            sourcemap: true
+          }
+      })
+  ],
 })
 

@@ -8,8 +8,7 @@ import {
     DefaultButton, 
     IStackTokens, 
     Text, 
-    TimePicker,
-    ComboBox, 
+    ComboBox,
     IComboBoxOption
 } from '@fluentui/react'
 const stackTkn: IStackTokens = {childrenGap: 20};
@@ -30,7 +29,8 @@ const daysOfWeek: IComboBoxOption[] = [
 const CreateMed: React.FC = () => {
     const navigate = useNavigate();
     const [name, setName] = useState('');
-    const [dosage, setDosage] = useState('');const [freq, setFreq] = useState<string | number>('');
+    const [dosage, setDosage] = useState('');
+    const [freq, setFreq] = useState<string | number>('');
     const [time, setTime] = useState('');
     const [day, setDay] = useState<string | number>('');
     const [error, setE] = useState('');
@@ -38,7 +38,7 @@ const CreateMed: React.FC = () => {
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
         // Send medication data to the backend
-
+        await addMed({name, dosage, time, day, freq})
         console.log({name, dosage, time, day, freq});
         navigate('/home');
     }
