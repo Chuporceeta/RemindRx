@@ -18,13 +18,13 @@ const freqOptions: IComboBoxOption[] = [
     {key: 'monthly', text: 'Monthly'}
 ];
 const daysOfWeek: IComboBoxOption[] = [
-    {key: 'sun', text: 'Sunday'},
-    {key: 'mon', text: 'Monday'},
-    {key: 'tue', text: 'Tuesday'},
-    {key: 'wed', text: 'Wednesday'},
-    {key: 'thu', text: 'Thursday'},
-    {key: 'fri', text: 'Friday'},
-    {key: 'sat', text: 'Saturday'}
+    {key: 0, text: 'Sunday'},
+    {key: 1, text: 'Monday'},
+    {key: 2, text: 'Tuesday'},
+    {key: 3, text: 'Wednesday'},
+    {key: 4, text: 'Thursday'},
+    {key: 5, text: 'Friday'},
+    {key: 6, text: 'Saturday'}
 ];
 const CreateMed: React.FC = () => {
     const navigate = useNavigate();
