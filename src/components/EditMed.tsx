@@ -1,22 +1,27 @@
 import { useState } from 'react';
-import { Stack, TextField, PrimaryButton, DefaultButton, Text, IStackTokens, mergeStyles } from '@fluentui/react';
+import { Stack, TextField, PrimaryButton, DefaultButton, Text, IStackTokens, mergeStyles, ComboBox,IComboBoxOption } from '@fluentui/react';
 import { Link } from 'react-router-dom';
+import {Timer, Clock, CheckCircle, Edit, Trash2} from 'lucide-react';
+
 
 interface Medication {
+    id: string;
     name: string;
     dosage: number;
-    frequency: number;
+    frequency: string;
+    time: string;
+    day: string; 
 }
 
 function EditMedicationsPage() {
     const [medications, setMedications] = useState<Medication[]>([]);
-    const [newMedication, setNewMedication] = useState<Medication>({ name: '', dosage: 0, frequency: 0 });
+    const [newMedication, setNewMedication] = useState<Medication>({ id: '', name: '', dosage: 0, frequency: '', time: '', day: '' });
     const [editingIndex, setEditingIndex] = useState<number | null>(null); // Track which medication is being edited
 
     const handleAddMedication = () => {
-        if (newMedication.name && newMedication.dosage > 0 && newMedication.frequency > 0) {
+        if (newMedication.name && newMedication.dosage > 0 && newMedication.frequency && newMedication.day && newMedication.time) {
             setMedications([...medications, newMedication]);
-            setNewMedication({ name: '', dosage: 0, frequency: 0 });
+            setNewMedication({ id: '', name: '', dosage: 0, frequency: '', time: '', day: ''});
         }
     };
 
@@ -29,7 +34,7 @@ function EditMedicationsPage() {
         const value = e.currentTarget.value;
         setNewMedication(prevState => ({
             ...prevState,
-            [field]: field === 'dosage' || field === 'frequency' ? parseInt(value) || 0 : value // Dosages and frequency must be a number
+            [field]: field === 'dosage' ? parseInt(value) || 0 : value // Dosages must be a number
         }));
     };
 
@@ -43,12 +48,30 @@ function EditMedicationsPage() {
         updatedMedications[index] = newMedication;
         setMedications(updatedMedications);
         setEditingIndex(null); 
-        setNewMedication({ name: '', dosage: 0, frequency: 0 }); 
+        setNewMedication({ id: '', name: '', dosage: 0, frequency: '', time: '', day: '' }); 
     };
 
     const stackTkn: IStackTokens = { childrenGap: 16, padding: 16 };
-    const medCardClass = mergeStyles({ backgroundColor: '#caf0f8', padding: '16px', borderRadius: '8px', marginBottom: '8px' });
-    const headerClass = mergeStyles({ fontWeight: '600' });
+    const medCardClass = mergeStyles({
+        backgroundColor: '#caf0f8', padding: '16px', borderRadius: '8px', marginBottom: '8px',
+        transition: 'all 0.3s ease-in-out', '&:hover': { backgroundColor: '#ade8f4' }
+    });    const headerClass = mergeStyles({ fontWeight: '600' });
+
+    const freqOptions: IComboBoxOption[] = [
+        {key: 'daily', text: 'Daily'}, 
+        {key: 'weekly', text: 'Weekly'},
+        {key: 'monthly', text: 'Monthly'}
+    ];
+    const daysOfWeek: IComboBoxOption[] = [
+        {key: 0, text: 'Sunday'},
+        {key: 1, text: 'Monday'},
+        {key: 2, text: 'Tuesday'},
+        {key: 3, text: 'Wednesday'},
+        {key: 4, text: 'Thursday'},
+        {key: 5, text: 'Friday'},
+        {key: 6, text: 'Saturday'}
+    ];
+
 
     return (
         <Stack tokens={stackTkn}>
@@ -56,7 +79,7 @@ function EditMedicationsPage() {
                 horizontal
                 horizontalAlign="space-between"
                 verticalAlign="center"
-                styles={{ root: { padding: '16px', backgroundColor: 'white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' } }}
+                styles={{ root: { padding: '16px', backgroundColor: 'white'} }}
             >
                 <Text variant="xLarge" styles={{ root: { fontWeight: '700', fontSize: '20px' } }}>
                     Edit Medications
@@ -72,66 +95,76 @@ function EditMedicationsPage() {
                         Current Medications
                     </Text>
 
-                    <Stack styles={{ root: { padding: '16px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' } }}>
-
-                        <Stack horizontal horizontalAlign="space-between" styles={{ root: { marginBottom: '8px' } }}>
-                            <Text className={headerClass} styles={{ root: { width: '34%' } }}>Name</Text>
-                            <Text className={headerClass} styles={{ root: { width: '25%' } }}>Dosage (mg)</Text>
-                            <Text className={headerClass} styles={{ root: { width: '41%' } }}>Frequency</Text>
-                        </Stack>
+                    <Stack >
 
                         <Stack>
                             {medications.length === 0 ? (
                                 <Text>No medications added.</Text>
                             ) : (
                                 medications.map((med, index) => (
-                                    <Stack key={index} className={medCardClass} horizontal horizontalAlign="space-between" verticalAlign="center">
+                                    <Stack key={index} className={medCardClass} styles={{root:{ maxWidth: '800px', margin: '0 auto', width: '100%'}}}>
                                         {editingIndex === index ? (
                                             <>
-                                                <TextField
-                                                    //label="Name"
-                                                    value={newMedication.name}
-                                                    onChange={(e) => handleChange(e, 'name')}
-                                                    styles={{ root: { width: '38%' } }}
-                                                />
-                                                <TextField
-                                                    //label="Dosage (mg)"
-                                                    value={newMedication.dosage.toString()}
-                                                    onChange={(e) => handleChange(e, 'dosage')}
-                                                    styles={{ root: { width: '38%' } }}
-                                                />
-                                                <TextField
-                                                    //label="Frequency"
-                                                    value={newMedication.frequency.toString()}
-                                                    onChange={(e) => handleChange(e, 'frequency')}
-                                                    styles={{ root: { width: '38%' } }}
-                                                />
-                                                <PrimaryButton
+                                                <Stack tokens={stackTkn}>
+                                                    <TextField
+                                                        label="Medication Name"
+                                                        required
+                                                        value={newMedication.name}
+                                                        onChange={(e) => handleChange(e, 'name')}
+                                                    />
+                                                    <TextField
+                                                        label="Dosage (mg)"
+                                                        required
+                                                        value={newMedication.dosage.toString()}
+                                                        onChange={(e) => handleChange(e, 'dosage')}
+                                                    />
+                                                    <TextField
+                                                        label = "Time"
+                                                        required
+                                                        type="time"
+                                                        value={newMedication.time}
+                                                        onChange={(e) => handleChange(e, 'time')}
+                                                    />
+                                                    <TextField
+                                                        label = "Day of the Week"
+                                                        required
+                                                        value={newMedication.day}
+                                                        onChange={(e) => handleChange(e, 'day')}
+                                                    />
+                                                    <TextField
+                                                        label="Frequency"
+                                                        required
+                                                        value={newMedication.frequency}
+                                                        onChange={(e) => handleChange(e, 'frequency')}
+                                                    />
+                                                    <PrimaryButton
                                                     text="Save"
                                                     onClick={() => handleSaveMedication(index)}
                                                     styles={{ root: { height: '30px', marginLeft: '8px' } }}
                                                 />
+                                                </Stack> 
                                             </>
                                         ) : (
                                             <>
-                                                <Text style={{ width: '50%' }}>{med.name}</Text>
-                                                <Text style={{ width: '38%' }}>{med.dosage} mg</Text>
-                                                <Text style={{ width: '16%' }}>{med.frequency}</Text>
-                                                <DefaultButton
-                                                    iconProps={{ iconName: 'Edit' }}
-                                                    onClick={() => handleEditMedication(index)}
-                                                    styles={{
-                                                        root: {
-                                                            height: '30px',
-                                                            marginRight: '8px'
-                                                        }
-                                                    }}
-                                                />
-                                                <DefaultButton
-                                                    iconProps={{ iconName: 'Delete' }}
-                                                    onClick={() => handleDeleteMedication(index)}
-                                                    styles={{ root: { backgroundColor: '#f87171', color: 'white' } }}
-                                                />
+                                                <Stack key={med.id} className={medCardClass} horizontal horizontalAlign='start' verticalAlign='center'>
+                                                <Stack tokens={{childrenGap: 4}} styles={{root: {flex: 2, paddingLeft: '26px'}}}>
+                                                <Text variant="mediumPlus" styles={{root: {fontWeight: '600'}}}>
+                                                    {med.name} - {med.dosage} mg
+                                                    </Text>
+                                                <Stack tokens={{childrenGap: 4}}>
+                                                    <Text variant="small" styles={{root: {color: '#665'}}}>{med.day} at {med.time}</Text>
+                                                </Stack>
+                                                <Text variant="small" styles={{root: {color: '#665'}}}>{med.frequency}</Text>
+                                                </Stack>
+                                                <Stack horizontal tokens={{childrenGap: 8}}>
+                                                <button className="p-2 rounded-full bg-[#0077b6] hover:bg-[#023e8a] text-white" onClick={() => handleEditMedication(index)}>
+                                                    <Edit size={14}/>
+                                                </button>
+                                                <button className="p-2 rounded-full bg-[#f72585] hover:bg-[#7209b7] text-white" onClick={() => handleDeleteMedication(index)}>
+                                                    <Trash2 size={14}/>
+                                                </button>
+                                                </Stack>
+                                            </Stack>
                                             </>
                                         )}
                                     </Stack>
@@ -143,10 +176,15 @@ function EditMedicationsPage() {
 
                 <Stack tokens={stackTkn}>
                     <Text variant="large" styles={{ root: { fontWeight: '600' } }}>
-                        Add New Medication
+                        Add Medication
                     </Text>
-                    <Stack styles={{ root: { padding: '16px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' } }}>
+                    <Stack styles={{ root: { padding: '16px'} }}>
 
+                    {/*<TextField
+                            label="Id"
+                            value={newMedication.id}
+                            //onChange={(e) => handleChange(e, 'id')}
+                        />*/}
                         <TextField
                             label="Name"
                             value={newMedication.name}
@@ -158,12 +196,22 @@ function EditMedicationsPage() {
                             onChange={(e) => handleChange(e, 'dosage')}
                         />
                         <TextField
+                            label="Time"
+                            value={newMedication.time}
+                            onChange={(e) => handleChange(e, 'time')}
+                        />
+                        <TextField
+                            label="Day of the week"
+                            value={newMedication.day}
+                            onChange={(e) => handleChange(e, 'day')}
+                        />
+                        <TextField
                             label="Frequency"
                             value={newMedication.frequency.toString()}
                             onChange={(e) => handleChange(e, 'frequency')}
                         />
                         <PrimaryButton
-                            text="Add Medication"
+                            text="Confirm Medication"
                             onClick={handleAddMedication}
                             styles={{ root: { marginTop: '20px' } }}
                         />
