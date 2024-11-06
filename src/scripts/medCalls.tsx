@@ -4,7 +4,7 @@ import {collection, addDoc} from "firebase/firestore";
 type medInfo = {
     name: string,
     dosage: string,
-    time: string,
+    timeUTC: string,
     day: string | number,
     freq: string | number,
 }
