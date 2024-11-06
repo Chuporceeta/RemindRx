@@ -5,6 +5,8 @@ import {Timer, Clock, CheckCircle, Edit, Trash2} from 'lucide-react';
 import {Medication} from '../types/types';
 import {deleteMedDB, getMedsDB, markAsTakenDB} from '../scripts/medCalls.tsx';
 import {useEffect} from 'react';
+import {auth} from '../scripts/firebase-init.tsx';
+import {onAuthStateChanged} from 'firebase/auth';
 
 const daysOfWeek = {
   'sun': 'Sunday',
@@ -16,7 +18,6 @@ const daysOfWeek = {
   'sat': 'Saturday'
 };
 function HomePage() {
-  const meds = getMedsDB();
   const [medications, setMedications] = useState<{
     taken: Medication[];
     upcoming: Medication[];
@@ -26,17 +27,21 @@ function HomePage() {
   });
 
   useEffect(() => {
-    const fetchMeds = async () => {
-      const medsData: Medication[] = await meds; // Update the type of medsData to Medication[]
-      setMedications({
-        taken: medsData.filter((med: Medication) => med.isTaken),
-        upcoming: medsData.filter((med: Medication) => !med.isTaken)
-      });
-    };
-    fetchMeds().then(() => {
-        console.log("Fetched medications: ", medications);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const fetchMeds = async () => {
+          const medsData: Medication[] = await getMedsDB(); // Update the type of medsData to Medication[]
+          setMedications({
+            taken: medsData.filter((med: Medication) => med.isTaken),
+            upcoming: medsData.filter((med: Medication) => !med.isTaken)
+          });
+        };
+        fetchMeds().then(() => {
+          console.log("Fetched medications: ", medications);
+        });
+      }
     });
-  }, [meds]);
+  }, []);
 
   const stackTkn: IStackTokens = {childrenGap: 16, padding: 16};
   const medCardClass = mergeStyles({backgroundColor: '#caf0f8', padding: '16px', borderRadius: '8px', marginBottom: '8px', 

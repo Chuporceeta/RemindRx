@@ -8,9 +8,9 @@ export const addMed = async (medInfo: medInfo) => {
         const user = auth.currentUser;
 
         if (user) {
-            const med = await addDoc(collection(db, "Users", user.uid, "Medications"), medInfo);
-            return med.id;
-        }
+            await addDoc(collection(db, "Users", user.uid, "Medications"), medInfo);
+        } else
+            console.log('Error: No user currently signed in');
     } catch (err: any) {
         throw new Error(err);
     }
@@ -26,8 +26,8 @@ export const getMedsDB = async () => {
                 res.push({id: doc.id, ...doc.data()} as Medication);
             });
             return res;
-        }
-        else{
+        } else {
+            console.log('Error: No user currently signed in');
             return [];
         }
     } catch (err: any) {
@@ -42,7 +42,8 @@ export const markAsTakenDB = async (medId: string) => {
             await updateDoc(doc(db, "Users", user.uid, "Medications", medId), {
                 isTaken: true,
             });
-        }
+        } else
+            console.log('Error: No user currently signed in');
     } catch (err: any) {
         throw new Error(err);
     }
@@ -53,7 +54,8 @@ export const deleteMedDB = async (medId: string) => {
         const user = auth.currentUser;
         if (user) {
             await deleteDoc(doc(db, "Users", user.uid, "Medications", medId));
-        }
+        } else
+            console.log('Error: No user currently signed in');
     } catch (err: any) {
         throw new Error(err);
     }
