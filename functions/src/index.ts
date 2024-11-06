@@ -20,12 +20,12 @@ exports.sendNotifications = onSchedule("every minute", async () => {
             },
             tokens: user.data()["FCMTokens"],
         };
-        console.log(user.id, " => ", user.data());
         const meds = await getFirestore().collection("Users").doc(user.id).collection("Medications")
+            .where("isTaken", "==", false)
             .where("timeUTC", "==", time)
             .where(Filter.or(
                 Filter.where("freq", "==", "daily"),
-                Filter.where("day", "==", day)
+                Filter.where("dayUTC", "==", day)
             )).get();
         meds.forEach(med => {
             const data = med.data();
