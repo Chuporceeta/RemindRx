@@ -22,8 +22,8 @@ export const getMedsDB = async () => {
             const snapshot = await getDocs(collection(db, "Users", user.uid, "Medications"));
             const res: Medication[] = [];
             snapshot.forEach((doc) => {
-                const time = new Date(`0000T${doc.data()["timeUTC"]}Z`).toTimeString().slice(0, 5);
-                const date = new Date(`0000T${time}`);
+                const time = new Date(`2024T${doc.data()["timeUTC"]}Z`).toTimeString().slice(0, 5);
+                const date = new Date(`2024T${time}`);
 
                 res.push({
                     id: doc.id,
