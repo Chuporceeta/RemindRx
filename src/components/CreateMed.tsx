@@ -38,7 +38,7 @@ const CreateMed: React.FC = () => {
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
         // Send medication data to the backend
-        await addMed({name, dosage, time, day, freq})
+        await addMed({name, dosage, time, day, freq, isTaken:false})
         console.log({name, dosage, time, day, freq});
         navigate('/home');
     }

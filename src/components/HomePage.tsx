@@ -1,9 +1,9 @@
-import {Link, useNavigate} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {useState} from 'react';
-import {Text, Stack, IconButton, PrimaryButton, DefaultButton, IStackTokens, mergeStyles, Separator} from '@fluentui/react';
+import {Text, Stack, PrimaryButton, DefaultButton, IStackTokens, mergeStyles, Separator} from '@fluentui/react';
 import {Timer, Clock, CheckCircle, Edit, Trash2} from 'lucide-react';
 import {Medication} from '../types/types';
-import {getMedsDB} from '../scripts/medCalls.tsx';
+import {deleteMedDB, getMedsDB, markAsTakenDB} from '../scripts/medCalls.tsx';
 import {useEffect} from 'react';
 
 const daysOfWeek = {
@@ -21,35 +21,34 @@ function HomePage() {
     taken: Medication[];
     upcoming: Medication[];
   }>({
-    taken: [
-      {id: '001', name: 'Aspirin', dosage: '500mg', time: '8:00 AM', day: 'mon', freq:"Weekly", isTaken: false},
-      {id: '002', name: 'Ibuprofen', dosage: '200mg', time: '12:00 PM', day: 'mon', freq:"Daily", isTaken: false},
-      {id: '003', name: 'Tylenol', dosage: '500mg', time: '6:00 PM', day: 'mon', freq:"Daily", isTaken: false},
-    ],
+    taken: [],
     upcoming: []
   });
 
   useEffect(() => {
     const fetchMeds = async () => {
       const medsData: Medication[] = await meds; // Update the type of medsData to Medication[]
-      setMedications(prev => ({
-        ...prev,
+      setMedications({
+        taken: medsData.filter((med: Medication) => med.isTaken),
         upcoming: medsData.filter((med: Medication) => !med.isTaken)
-      }));
+      });
     };
-    fetchMeds();
+    fetchMeds().then(() => {
+        console.log("Fetched medications: ", medications);
+    });
   }, [meds]);
 
   const stackTkn: IStackTokens = {childrenGap: 16, padding: 16};
   const medCardClass = mergeStyles({backgroundColor: '#caf0f8', padding: '16px', borderRadius: '8px', marginBottom: '8px', 
     transition: 'all 0.3s ease-in-out', '&:hover': {backgroundColor: '#ade8f4'}
   });
+
   const markAsTaken = (medID: string) => {
-    const now = new Date();
+    markAsTakenDB(medID);
     setMedications(prev => {
       const medicationToMove = prev.upcoming.find(med => med.id === medID);
-      if (!medicationToMove) 
-        return prev; 
+      if (!medicationToMove)
+        return prev;
       const takenMed = {
         ...medicationToMove,
         isTaken: true,
@@ -60,14 +59,17 @@ function HomePage() {
       };
     });
   };
+
   const deleteMed = (medID: string) => {
+    deleteMedDB(medID);
     setMedications(prev => {
       return {
         taken: prev.taken.filter(med => med.id !== medID),
         upcoming: prev.upcoming.filter(med => med.id !== medID)
       };
     });
-  }
+  };
+
   const renderMedCard = (med: Medication, recent: boolean) => {
     return(
       <Stack key={med.id} className={medCardClass} horizontal horizontalAlign='start' verticalAlign='center'>
@@ -121,7 +123,7 @@ function HomePage() {
             Recently Taken
           </Text>
           <Stack>
-            {medications.taken.map((med, index) => (renderMedCard(med, true)))}
+            {medications.taken.map((med, _) => (renderMedCard(med, true)))}
           </Stack>
         </Stack>
         <Separator />
@@ -130,7 +132,7 @@ function HomePage() {
             Upcoming Medications
           </Text>
           <Stack>
-            {medications.upcoming.map((med, index) => (renderMedCard(med, false)))}
+            {medications.upcoming.map((med, _) => (renderMedCard(med, false)))}
           </Stack>
         </Stack>
         <Stack horizontalAlign="center" tokens={{childrenGap: 16}}>
