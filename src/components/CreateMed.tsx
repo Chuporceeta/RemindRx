@@ -18,13 +18,13 @@ const freqOptions: IComboBoxOption[] = [
     {key: 'monthly', text: 'Monthly'}
 ];
 const daysOfWeek: IComboBoxOption[] = [
-    {key: 0, text: 'Sunday'},
-    {key: 1, text: 'Monday'},
-    {key: 2, text: 'Tuesday'},
-    {key: 3, text: 'Wednesday'},
-    {key: 4, text: 'Thursday'},
-    {key: 5, text: 'Friday'},
-    {key: 6, text: 'Saturday'}
+    {key: 1, text: 'Sunday'},
+    {key: 2, text: 'Monday'},
+    {key: 3, text: 'Tuesday'},
+    {key: 4, text: 'Wednesday'},
+    {key: 5, text: 'Thursday'},
+    {key: 6, text: 'Friday'},
+    {key: 7, text: 'Saturday'}
 ];
 const CreateMed: React.FC = () => {
     const navigate = useNavigate();
@@ -38,8 +38,10 @@ const CreateMed: React.FC = () => {
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
         // Send medication data to the backend
-        await addMed({name, dosage, time, day, freq})
-        console.log({name, dosage, time, day, freq});
+        const date = new Date(`2024T${time}`);
+        const dayUTC = Number(day) + date.getUTCDay() - date.getDay() - 1;
+        const timeUTC = date.toISOString().slice(11, 16);
+        await addMed({name, dosage, timeUTC, dayUTC, freq, isTaken:false})
         navigate('/home');
     }
     return(
