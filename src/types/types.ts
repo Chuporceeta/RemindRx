@@ -1,8 +1,8 @@
 export type medInfo = {
     name: string,
     dosage: string,
-    time: string,
-    day: string | number,
+    timeUTC: string,
+    dayUTC: number,
     freq: string | number,
     isTaken: boolean,
 }
@@ -12,7 +12,7 @@ export type Medication = {
     name: string,
     dosage: string,
     time: string,
-    day: string | number,
+    day: number,
     freq: string | number,
     isTaken: boolean,
 }

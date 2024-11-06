@@ -8,15 +8,8 @@ import {useEffect} from 'react';
 import {auth} from '../scripts/firebase-init.tsx';
 import {onAuthStateChanged} from 'firebase/auth';
 
-const daysOfWeek = {
-  'sun': 'Sunday',
-  'mon': 'Monday',
-  'tue': 'Tuesday',
-  'wed': 'Wednesday',
-  'thu': 'Thursday',
-  'fri': 'Friday',
-  'sat': 'Saturday'
-};
+const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 function HomePage() {
   const [medications, setMedications] = useState<{
     taken: Medication[];

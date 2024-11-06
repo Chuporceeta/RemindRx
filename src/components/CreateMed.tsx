@@ -38,10 +38,10 @@ const CreateMed: React.FC = () => {
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
         // Send medication data to the backend
-        const date = new Date('2000-01-01T'+time);
-        setDay(Number(day) + date.getUTCDay() - date.getDay() - 1);
+        const date = new Date(`0000T${time}`);
+        const dayUTC = Number(day) + date.getUTCDay() - date.getDay() - 1;
         const timeUTC = date.toISOString().slice(11, 16);
-        await addMed({name, dosage, timeUTC, day, freq, isTaken:false})
+        await addMed({name, dosage, timeUTC, dayUTC, freq, isTaken:false})
         console.log({name, dosage, timeUTC, day, freq});
         navigate('/home');
     }
