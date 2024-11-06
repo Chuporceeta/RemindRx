@@ -119,20 +119,20 @@ function HomePage() {
       </Stack>
       <Stack tokens={stackTkn} styles={{root:{ maxWidth: '800px', margin: '0 auto', width: '100%'}}}>
         <Stack tokens={stackTkn}>
-          <Text variant="large" styles={{root: { fontWeight: '600'}}}>
-            Recently Taken
-          </Text>
-          <Stack>
-            {medications.taken.map((med, _) => (renderMedCard(med, true)))}
-          </Stack>
-        </Stack>
-        <Separator />
-        <Stack tokens={stackTkn}>
           <Text variant="large" styles={{root: {fontWeight: '600'}}}>
             Upcoming Medications
           </Text>
           <Stack>
             {medications.upcoming.map((med, _) => (renderMedCard(med, false)))}
+          </Stack>
+        </Stack>
+        <Separator />
+        <Stack tokens={stackTkn}>
+          <Text variant="large" styles={{root: { fontWeight: '600'}}}>
+            Recently Taken
+          </Text>
+          <Stack>
+            {medications.taken.map((med, _) => (renderMedCard(med, true)))}
           </Stack>
         </Stack>
         <Stack horizontalAlign="center" tokens={{childrenGap: 16}}>
