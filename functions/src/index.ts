@@ -25,7 +25,10 @@ exports.sendNotifications = onSchedule("every minute", async () => {
             .where("timeUTC", "==", time)
             .where(Filter.or(
                 Filter.where("freq", "==", "daily"),
-                Filter.where("dayUTC", "==", day)
+                Filter.and(
+                    Filter.where("freq", "==", "weekly"),
+                    Filter.where("dayUTC", "==", day)
+                )
             )).get();
         meds.forEach(med => {
             const data = med.data();
@@ -39,3 +42,28 @@ exports.sendNotifications = onSchedule("every minute", async () => {
     }
 });
 
+exports.unMarkMeds = onSchedule("every day at midnight", async () => {
+    const day = new Date().getUTCDay();
+    const time = new Date().toISOString().slice(11, 16);
+    const users = await getFirestore().collection("Users").get();
+    console.log (`day: ${day}, time: ${time}`);
+    const batch = getFirestore().batch()
+    for (const user of users.docs) {
+        const meds = await getFirestore().collection("Users").doc(user.id).collection("Medications")
+            .where("isTaken", "==", true)
+            .where(Filter.or(
+                Filter.where("freq", "==", "daily"),
+                Filter.and(
+                    Filter.where("freq", "==", "weekly"),
+                    Filter.where("dayUTC", "==", day)
+                )
+            )).get();
+        meds.forEach(med => {
+            batch.update(
+                getFirestore().collection("Users").doc(user.id).collection("Medications").doc(med.id),
+                {isTaken: true}
+            );
+        })
+    }
+    await batch.commit();
+})
