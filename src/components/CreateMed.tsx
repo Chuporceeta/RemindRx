@@ -35,15 +35,12 @@ const CreateMed: React.FC = () => {
     const [time, setTime] = useState('');
     const [day, setDay] = useState<string | number>('');
     const [error, setE] = useState('');
-    const handleFreqChange = (_: any, option?: IComboBoxOption) => {
-        setFreq(option?.key || '');
-        setDay('');
-    }
+ 
     const validateDay = (newValue: string) => {
         const day = parseInt(newValue);
         return !isNaN(day) && day >= 1 && day <= 30;
     }  
-    const handleDayChange = (_: any, newValue?: string) => {
+    const handleDayChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         if (!newValue) {
             setDay('');
             return;
