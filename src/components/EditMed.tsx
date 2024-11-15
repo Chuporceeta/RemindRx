@@ -1,4 +1,4 @@
-import { useState } from 'react';
+{/*import { useState } from 'react';
 import { Stack, TextField, PrimaryButton, DefaultButton, Text, IStackTokens, mergeStyles, ComboBox,IComboBoxOption } from '@fluentui/react';
 import { Link } from 'react-router-dom';
 import {Timer, Clock, CheckCircle, Edit, Trash2} from 'lucide-react';
@@ -184,7 +184,7 @@ function EditMedicationsPage() {
                             label="Id"
                             value={newMedication.id}
                             //onChange={(e) => handleChange(e, 'id')}
-                        />*/}
+                        />
                         <TextField
                             label="Name"
                             value={newMedication.name}
@@ -222,4 +222,4 @@ function EditMedicationsPage() {
     );
 }
 
-export default EditMedicationsPage;
+    export default EditMedicationsPage;*/}
