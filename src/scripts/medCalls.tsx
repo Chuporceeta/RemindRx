@@ -15,6 +15,20 @@ export const addMed = async (medInfo: medInfo) => {
     }
 };
 
+export const editMed = async (medId: string, medInfo: medInfo) => {
+    try {
+        const user = auth.currentUser;
+        if (user) {
+            const medRef = doc(db, "Users", user.uid, "Medications", medId);
+            await updateDoc(medRef, medInfo);
+        } else {
+            console.log('Error: No user currently signed in');
+        }
+    } catch (err: any) {
+        throw new Error(err.message || 'Failed to edit medication');
+    }
+};
+
 export const getMedsDB = async () => {
     try {
         const user = auth.currentUser;

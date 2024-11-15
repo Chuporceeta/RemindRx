@@ -2,8 +2,8 @@ import {Link} from 'react-router-dom';
 import {useState} from 'react';
 import {Text, Stack, PrimaryButton, DefaultButton, IStackTokens, mergeStyles, Separator} from '@fluentui/react';
 import {Timer, Clock, CheckCircle, Edit, Trash2} from 'lucide-react';
-import {Medication} from '../types/types';
-import {deleteMedDB, getMedsDB, markAsTakenDB} from '../scripts/medCalls.tsx';
+import {Medication, medInfo} from '../types/types';
+import {deleteMedDB, getMedsDB, markAsTakenDB, editMedDB} from '../scripts/medCalls.tsx';
 import {useEffect} from 'react';
 import {auth} from '../scripts/firebase-init.tsx';
 import {onAuthStateChanged} from 'firebase/auth';
@@ -68,6 +68,16 @@ function HomePage() {
     });
   };
 
+  const editMed = async (medID: string) => {
+
+    //get user updated info
+
+
+
+    await editMedDB(medID, updatedMedInfo);
+
+};
+
   const renderMedCard = (med: Medication, recent: boolean) => {
     return(
       <Stack key={med.id} className={medCardClass} horizontal horizontalAlign='start' verticalAlign='center'>
@@ -86,6 +96,11 @@ function HomePage() {
         <Stack horizontal tokens={{childrenGap: 8}}>
           <button className="p-2 rounded-full bg-[#f72585] hover:bg-[#7209b7] text-white" onClick={() => deleteMed(med.id)}>
               <Trash2 size={14}/>
+            </button>
+            <button 
+              className="p-2 rounded-full bg-[#0077b6] hover:bg-[#023e8a] text-white" 
+              onClick={() => editMed(med.id)}>
+              <Edit size={14}/>
             </button>
           {!recent && (
             <button className="p-2 rounded-full bg-[#0077b6] hover:bg-[#023e8a] text-white" onClick={() => markAsTaken(med.id)}>
