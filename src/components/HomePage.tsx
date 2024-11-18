@@ -1,16 +1,18 @@
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import {Text, Stack, PrimaryButton, DefaultButton, IStackTokens, mergeStyles, Separator} from '@fluentui/react';
 import {Timer, Clock, CheckCircle, Edit, Trash2} from 'lucide-react';
 import {Medication, medInfo} from '../types/types';
-import {deleteMedDB, getMedsDB, markAsTakenDB, editMedDB} from '../scripts/medCalls.tsx';
+import {deleteMedDB, getMedsDB, markAsTakenDB} from '../scripts/medCalls.tsx';
 import {useEffect} from 'react';
 import {auth} from '../scripts/firebase-init.tsx';
 import {onAuthStateChanged} from 'firebase/auth';
+import EditMed from "./EditMed.tsx";
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 function HomePage() {
+  const navigate = useNavigate();
   const [medications, setMedications] = useState<{
     taken: Medication[];
     upcoming: Medication[];
@@ -42,7 +44,7 @@ function HomePage() {
   });
 
   const markAsTaken = (medID: string) => {
-    markAsTakenDB(medID);
+    void markAsTakenDB(medID);
     setMedications(prev => {
       const medicationToMove = prev.upcoming.find(med => med.id === medID);
       if (!medicationToMove)
@@ -59,7 +61,7 @@ function HomePage() {
   };
 
   const deleteMed = (medID: string) => {
-    deleteMedDB(medID);
+    void deleteMedDB(medID);
     setMedications(prev => {
       return {
         taken: prev.taken.filter(med => med.id !== medID),
@@ -68,15 +70,19 @@ function HomePage() {
     });
   };
 
-  const editMed = async (medID: string) => {
+  const editMed = async (med: Medication) => {
+    navigate(`/edit-med`, {state: {med}});
+  };
 
-    //get user updated info
-
-
-
-    await editMedDB(medID, updatedMedInfo);
-
-};
+  const ordinal = (day: number) => {
+    if (day % 10 == 1)
+      return `${day}st`;
+    if (day % 10 == 2)
+      return `${day}nd`;
+    if (day % 10 == 3)
+      return `${day}rd`;
+    return `${day}th`;
+  };
 
   const renderMedCard = (med: Medication, recent: boolean) => {
     return(
@@ -89,17 +95,17 @@ function HomePage() {
         <Stack tokens={{childrenGap: 4}} styles={{root: {flex: 2, paddingLeft: '26px'}}}>
           <Text variant="mediumPlus" styles={{root: {fontWeight: '600'}}}>{med.name} - {med.dosage}</Text>
           <Stack tokens={{childrenGap: 4}}>
-            <Text variant="small" styles={{root: {color: '#665'}}}>{daysOfWeek[med.day]} at {med.time}</Text>
+            <Text variant="small" styles={{root: {color: '#665'}}}>
+              {med.freq == "daily" ? "Every day" : med.freq == "weekly" ? `Every ${daysOfWeek[med.day]}` :
+                  `The ${ordinal(med.day)} of every month`} at {med.time}</Text>
           </Stack>
-          <Text variant="small" styles={{root: {color: '#665'}}}>{med.freq}</Text>
         </Stack>
         <Stack horizontal tokens={{childrenGap: 8}}>
           <button className="p-2 rounded-full bg-[#f72585] hover:bg-[#7209b7] text-white" onClick={() => deleteMed(med.id)}>
               <Trash2 size={14}/>
             </button>
             <button 
-              className="p-2 rounded-full bg-[#0077b6] hover:bg-[#023e8a] text-white" 
-              onClick={() => editMed(med.id)}>
+              className="p-2 rounded-full bg-[#0077b6] hover:bg-[#023e8a] text-white" onClick={() => editMed(med)}>
               <Edit size={14}/>
             </button>
           {!recent && (

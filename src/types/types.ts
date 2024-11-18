@@ -7,8 +7,6 @@ export type medInfo = {
     isTaken: boolean,
 }
 
-
-
 export type Medication = {
     id: string,
     name: string,
