@@ -7,11 +7,12 @@ admin.initializeApp({
     credential: admin.credential.applicationDefault(),
 });
 
-exports.sendNotifications = onSchedule("every minute", async () => {
-    const day = new Date().getUTCDay();
+exports.sendNotifications = onSchedule("*/5 * * * *", async () => {
+    const weekday = new Date().getUTCDay();
+    const monthDay = Number(new Date().toISOString().slice(8, 10));
     const time = new Date().toISOString().slice(11, 16);
     const users = await getFirestore().collection("Users").get();
-    console.log (`day: ${day}, time: ${time}`);
+    console.log (`weekday: ${weekday}, day of month: ${monthDay} time: ${time}`);
     for (const user of users.docs) {
         const message = {
             notification: {
@@ -27,7 +28,11 @@ exports.sendNotifications = onSchedule("every minute", async () => {
                 Filter.where("freq", "==", "daily"),
                 Filter.and(
                     Filter.where("freq", "==", "weekly"),
-                    Filter.where("dayUTC", "==", day)
+                    Filter.where("dayUTC", "==", weekday)
+                ),
+                Filter.and(
+                    Filter.where("freq", "==", "monthly"),
+                    Filter.where("dayUTC", "==", monthDay)
                 )
             )).get();
         meds.forEach(med => {
@@ -42,28 +47,39 @@ exports.sendNotifications = onSchedule("every minute", async () => {
     }
 });
 
-exports.unMarkMeds = onSchedule("every day at midnight", async () => {
-    const day = new Date().getUTCDay();
+exports.unMarkMeds = onSchedule("0 */2 * * *", async () => {
+    const weekday = new Date().getUTCDay();
+    const monthDay = Number(new Date().toISOString().slice(8, 10));
     const time = new Date().toISOString().slice(11, 16);
+    const timeP8 = ((Number(time.slice(0, 2)) + 8) % 24).toString().padStart(2, '0') + time.slice(2, 5);
+
+    console.log (`weekday: ${weekday}, day of month: ${monthDay}, time: ${time}, time+8: ${timeP8}`);
+
     const users = await getFirestore().collection("Users").get();
-    console.log (`day: ${day}, time: ${time}`);
-    const batch = getFirestore().batch()
+    const batch = getFirestore().batch();
     for (const user of users.docs) {
         const meds = await getFirestore().collection("Users").doc(user.id).collection("Medications")
             .where("isTaken", "==", true)
             .where(Filter.or(
-                Filter.where("freq", "==", "daily"),
+                Filter.and(
+                    Filter.where("freq", "==", "daily"),
+                    Filter.where("timeUTC", "<=", timeP8)
+                ),
                 Filter.and(
                     Filter.where("freq", "==", "weekly"),
-                    Filter.where("dayUTC", "==", day)
+                    Filter.where("dayUTC", "==", (weekday+1)%7),
+                ),
+                Filter.and(
+                    Filter.where("freq", "==", "monthly"),
+                    Filter.where("dayUTC", "==", (monthDay+3)%31)
                 )
             )).get();
-        meds.forEach(med => {
+        for (const med of meds.docs) {
             batch.update(
                 getFirestore().collection("Users").doc(user.id).collection("Medications").doc(med.id),
-                {isTaken: true}
+                {isTaken: false}
             );
-        })
+        }
     }
     await batch.commit();
 })
