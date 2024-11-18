@@ -64,7 +64,7 @@ const MedMenu = (mode: string = 'add', med: Medication | undefined = undefined) 
             const date = new Date(`2024T${time}`);
             let dayUTC = 0;
             if (freq === 'weekly') {
-                dayUTC = Number(day) + date.getUTCDay() - date.getDay() - 1;
+                dayUTC = Number(day)-1 + date.getUTCDay() - date.getDay();
             }
             else if (freq === 'monthly') {
                 dayUTC = Number(day) + date.getUTCDay() - date.getDay();
