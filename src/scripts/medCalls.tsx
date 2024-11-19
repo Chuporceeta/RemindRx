@@ -15,7 +15,7 @@ export const addMed = async (medInfo: medInfo) => {
     }
 };
 
-export const editMed = async (medId: string, medInfo: medInfo) => {
+export const editMedDB = async (medId: string, medInfo: medInfo) => {
     try {
         const user = auth.currentUser;
         if (user) {

@@ -10,7 +10,7 @@ import {
     ComboBox,
     IComboBoxOption
 } from '@fluentui/react'
-import {addMed, editMed} from "../scripts/medCalls.tsx";
+import {addMed, editMedDB} from "../scripts/medCalls.tsx";
 import {Medication, medInfo} from "../types/types.ts";
 const stackTkn: IStackTokens = {childrenGap: 20};
 const freqOptions: IComboBoxOption[] = [
@@ -75,7 +75,7 @@ const MedMenu = (mode: string = 'add', med: Medication | undefined = undefined) 
                 await addMed({name, dosage, timeUTC, dayUTC, freq, isTaken: false})
             } else if (mode == 'edit' && med) {
                 const info: medInfo = {name, dosage, timeUTC, dayUTC, freq, isTaken: med.isTaken};
-                await editMed(med.id, info);
+                await editMedDB(med.id, info);
             }
             navigate('/home');
         }
