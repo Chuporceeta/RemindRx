@@ -20,6 +20,11 @@ exports.sendNotifications = onSchedule("*/5 * * * *", async () => {
                 "body":""
             },
             tokens: user.data()["FCMTokens"],
+            webpush: {
+                fcmOptions: {
+                    link: '/home'
+                }
+            },
         };
         const meds = await getFirestore().collection("Users").doc(user.id).collection("Medications")
             .where("isTaken", "==", false)
