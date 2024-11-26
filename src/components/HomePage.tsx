@@ -1,5 +1,3 @@
-//'use client';
-
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Text, Stack, PrimaryButton, DefaultButton, IStackTokens, mergeStyles, Separator } from '@fluentui/react';
