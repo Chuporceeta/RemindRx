@@ -1,3 +1,5 @@
+//'use client';
+
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Text, Stack, PrimaryButton, DefaultButton, IStackTokens, mergeStyles, Separator } from '@fluentui/react';
@@ -8,11 +10,20 @@ import { useEffect } from 'react';
 import { auth } from '../scripts/firebase-init.tsx';
 import { onAuthStateChanged } from 'firebase/auth';
 import EditMed from "./EditMed.tsx";
+import TourGuide from './TourGuide.tsx';
 
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 function HomePage() {
   const navigate = useNavigate();
+  const [startTour, setStartTour] = useState<boolean>(
+    () => localStorage.getItem("startTour") === "true" // Default to false unless set to true
+  );
+  const [loaded, setLoaded] = useState(false);
+
+  
+  
+
   const [medications, setMedications] = useState<{
     taken: Medication[];
     upcoming: Medication[];
@@ -37,6 +48,22 @@ function HomePage() {
       }
     });
   }, []);
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+  if (!loaded) {
+    return <div>Loading...</div>;
+  }
+
+  const handleStartTour = () => {
+    setStartTour(true);
+    localStorage.setItem("startTour", "true");
+  };
+
+  const handleTourEnd = () => {
+    setStartTour(false);
+    localStorage.removeItem("startTour"); // Clear state if you want to reset on next login
+  };
 
   const stackTkn: IStackTokens = { childrenGap: 16, padding: 16 };
   const medCardClass = mergeStyles({
@@ -84,6 +111,7 @@ function HomePage() {
       return `${day}rd`;
     return `${day}th`;
   };
+  
 
   const renderMedCard = (med: Medication, recent: boolean) => {
     return (
@@ -102,15 +130,15 @@ function HomePage() {
           </Stack>
         </Stack>
         <Stack horizontal tokens={{ childrenGap: 8 }}>
-          <button className="p-2 rounded-full bg-[#f72585] hover:bg-[#7209b7] text-white" onClick={() => deleteMed(med.id)}>
+          <button id="delete-med" className="p-2 rounded-full bg-[#f72585] hover:bg-[#7209b7] text-white" onClick={() => deleteMed(med.id)}>
             <Trash2 size={14} />
           </button>
-          <button
+          <button id='edit-med'
             className="p-2 rounded-full bg-[#0077b6] hover:bg-[#023e8a] text-white" onClick={() => editMed(med)}>
             <Edit size={14} />
           </button>
           {!recent && (
-            <button className="p-2 rounded-full bg-[#0077b6] hover:bg-[#023e8a] text-white" onClick={() => markAsTaken(med.id)}>
+            <button id='mark-as-taken' className="p-2 rounded-full bg-[#0077b6] hover:bg-[#023e8a] text-white" onClick={() => markAsTaken(med.id)}>
               <CheckCircle size={14} />
             </button>
           )}
@@ -147,21 +175,38 @@ function HomePage() {
         <Text variant="xLarge" styles={{ root: { fontWeight: '700', fontSize: '20px' } }}>
           RemindRX
         </Text>
+        <Stack horizontal tokens={{childrenGap: 8}} horizontalAlign="center">
+        <button
+          
+          className="px-4 py-2 text-white bg-blue-500 rounded-md absolute top-4"
+          onClick={handleStartTour}
+          >
+            Tutorial
+          </button>
+        {startTour && (
+          <TourGuide 
+          start={startTour} 
+          setStartTour={setStartTour} 
+          onTourEnd={handleTourEnd}/>
+        )}
+        </Stack>
         <Stack horizontal tokens={{childrenGap: 8}}>
-          <DefaultButton
+          
+          <DefaultButton id="edit-account"
             onClick={() => navigate('/edit-account')}
             iconProps={{iconName: 'Edit', children: <Edit size={16} className="mr-2" />}}
             text="Edit Account"
           />
-          <DefaultButton
+          <DefaultButton id="export"
             onClick={exportMedicationData}
             iconProps={{iconName: 'Download', children: <Download size={16} className="mr-2" />}}
             text="Export (CSV)"
           />
+          
         </Stack>
       </Stack>
       <Stack tokens={stackTkn} styles={{ root: { maxWidth: '800px', margin: '0 auto', width: '100%' } }}>
-        <Stack tokens={stackTkn}>
+        <Stack id="upcoming-meds" tokens={stackTkn}>
           <Text variant="large" styles={{ root: { fontWeight: '600' } }}>
             Upcoming Medications
           </Text>
@@ -170,7 +215,7 @@ function HomePage() {
           </Stack>
         </Stack>
         <Separator />
-        <Stack tokens={stackTkn}>
+        <Stack id="recently-taken" tokens={stackTkn}>
           <Text variant="large" styles={{ root: { fontWeight: '600' } }}>
             Recently Taken
           </Text>
@@ -180,7 +225,7 @@ function HomePage() {
         </Stack>
         <Stack horizontalAlign="center" tokens={{ childrenGap: 16 }}>
           <Link to="/create-med" style={{ textDecoration: 'none' }}>
-            <PrimaryButton
+            <PrimaryButton id="add-new"
               text="Add New"
               styles={{ root: { marginTop: '20px' } }}
             />
