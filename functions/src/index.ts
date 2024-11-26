@@ -8,10 +8,11 @@ admin.initializeApp({
 });
 
 exports.sendNotifications = onSchedule("*/5 * * * *", async () => {
-    const day = new Date().getUTCDay();
+    const weekday = new Date().getUTCDay();
+    const monthDay = Number(new Date().toISOString().slice(8, 10));
     const time = new Date().toISOString().slice(11, 16);
     const users = await getFirestore().collection("Users").get();
-    console.log (`day: ${day}, time: ${time}`);
+    console.log (`weekday: ${weekday}, day of month: ${monthDay} time: ${time}`);
     for (const user of users.docs) {
         const message = {
             notification: {
@@ -19,6 +20,11 @@ exports.sendNotifications = onSchedule("*/5 * * * *", async () => {
                 "body":""
             },
             tokens: user.data()["FCMTokens"],
+            webpush: {
+                fcmOptions: {
+                    link: '/home'
+                }
+            },
         };
         const meds = await getFirestore().collection("Users").doc(user.id).collection("Medications")
             .where("isTaken", "==", false)
@@ -27,7 +33,11 @@ exports.sendNotifications = onSchedule("*/5 * * * *", async () => {
                 Filter.where("freq", "==", "daily"),
                 Filter.and(
                     Filter.where("freq", "==", "weekly"),
-                    Filter.where("dayUTC", "==", day)
+                    Filter.where("dayUTC", "==", weekday)
+                ),
+                Filter.and(
+                    Filter.where("freq", "==", "monthly"),
+                    Filter.where("dayUTC", "==", monthDay)
                 )
             )).get();
         meds.forEach(med => {
@@ -43,11 +53,12 @@ exports.sendNotifications = onSchedule("*/5 * * * *", async () => {
 });
 
 exports.unMarkMeds = onSchedule("0 */2 * * *", async () => {
-    const day = new Date().getUTCDay();
+    const weekday = new Date().getUTCDay();
+    const monthDay = Number(new Date().toISOString().slice(8, 10));
     const time = new Date().toISOString().slice(11, 16);
     const timeP8 = ((Number(time.slice(0, 2)) + 8) % 24).toString().padStart(2, '0') + time.slice(2, 5);
 
-    console.log (`day: ${day}, time: ${time}, time+8: ${timeP8}`);
+    console.log (`weekday: ${weekday}, day of month: ${monthDay}, time: ${time}, time+8: ${timeP8}`);
 
     const users = await getFirestore().collection("Users").get();
     const batch = getFirestore().batch();
@@ -61,7 +72,11 @@ exports.unMarkMeds = onSchedule("0 */2 * * *", async () => {
                 ),
                 Filter.and(
                     Filter.where("freq", "==", "weekly"),
-                    Filter.where("dayUTC", "==", day+1),
+                    Filter.where("dayUTC", "==", (weekday+1)%7),
+                ),
+                Filter.and(
+                    Filter.where("freq", "==", "monthly"),
+                    Filter.where("dayUTC", "==", (monthDay+3)%31)
                 )
             )).get();
         for (const med of meds.docs) {

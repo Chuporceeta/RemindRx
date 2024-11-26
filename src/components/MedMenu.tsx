@@ -10,7 +10,7 @@ import {
     ComboBox,
     IComboBoxOption
 } from '@fluentui/react'
-import {addMed, editMed} from "../scripts/medCalls.tsx";
+import {addMed, editMedDB} from "../scripts/medCalls.tsx";
 import {Medication, medInfo} from "../types/types.ts";
 const stackTkn: IStackTokens = {childrenGap: 20};
 const freqOptions: IComboBoxOption[] = [
@@ -64,7 +64,7 @@ const MedMenu = (mode: string = 'add', med: Medication | undefined = undefined) 
             const date = new Date(`2024T${time}`);
             let dayUTC = 0;
             if (freq === 'weekly') {
-                dayUTC = Number(day) + date.getUTCDay() - date.getDay() - 1;
+                dayUTC = Number(day)-1 + date.getUTCDay() - date.getDay();
             }
             else if (freq === 'monthly') {
                 dayUTC = Number(day) + date.getUTCDay() - date.getDay();
@@ -75,7 +75,7 @@ const MedMenu = (mode: string = 'add', med: Medication | undefined = undefined) 
                 await addMed({name, dosage, timeUTC, dayUTC, freq, isTaken: false})
             } else if (mode == 'edit' && med) {
                 const info: medInfo = {name, dosage, timeUTC, dayUTC, freq, isTaken: med.isTaken};
-                await editMed(med.id, info);
+                await editMedDB(med.id, info);
             }
             navigate('/home');
         }
